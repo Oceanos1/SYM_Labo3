@@ -1,16 +1,42 @@
 package com.remikaddie.labo3;
 
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
-public class CompassActivity extends AppCompatActivity {
+import java.util.Arrays;
+
+public class CompassActivity extends AppCompatActivity implements SensorEventListener {
 
     //opengl
-    private OpenGLRenderer  opglr           = null;
-    private GLSurfaceView   m3DView         = null;
+    private OpenGLRenderer opglr = null;
+    private GLSurfaceView m3DView = null;
+
+    // 3d
+    // Setting initial rotation matrix
+    private float[] lastRotMatrix = {1f, 0f, 0f, 0f,
+            0f, 1f, 0f, 0f,
+            0f, 0f, 1f, 0f,
+            0f, 0f, 0f, 1f};
+
+    private float[] gravity = null;
+    private float[] geoMagnetic = null;
+
+    //sensor
+    private SensorManager sensorManager;
+    private Sensor accelerometer;
+    private Sensor magnetic;
+
+
+    public CompassActivity() {
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,14 +58,49 @@ public class CompassActivity extends AppCompatActivity {
         //init opengl surface view
         this.m3DView.setRenderer(this.opglr);
 
+        // init sensor
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        magnetic = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
     }
 
-    /* TODO */
-    // your activity need to register accelerometer and magnetometer sensors' updates
-    // then you may want to call
-    //  this.opglr.swapRotMatrix()
-    // with the 4x4 rotation matrix, everytime a new matrix is computed
-    // more information on rotation matrix can be found on-line:
-    // https://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[],%20float[],%20float[],%20float[])
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, magnetic, SensorManager.SENSOR_DELAY_NORMAL);
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(this);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+
+        if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            this.gravity = sensorEvent.values;
+        }
+        if (sensorEvent.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+            this.geoMagnetic = sensorEvent.values;
+        }
+
+        if (gravity != null && geoMagnetic != null) {
+            // We do not need any inclination matrix
+            boolean ok = SensorManager.getRotationMatrix(lastRotMatrix, null, gravity, geoMagnetic);
+
+            if (ok) {
+                lastRotMatrix = this.opglr.swapRotMatrix(lastRotMatrix);
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+        // We do nothing
+    }
+    
 }
