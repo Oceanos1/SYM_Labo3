@@ -80,6 +80,10 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
+        // We do have to ignore bad stuff we detect
+        if(sensorEvent.accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE){
+            return;
+        }
 
         if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             this.gravity = sensorEvent.values;
@@ -102,5 +106,5 @@ public class CompassActivity extends AppCompatActivity implements SensorEventLis
     public void onAccuracyChanged(Sensor sensor, int i) {
         // We do nothing
     }
-    
+
 }
