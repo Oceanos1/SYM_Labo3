@@ -1,7 +1,12 @@
 package com.remikaddie.labo3;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
@@ -26,6 +31,7 @@ import static org.altbeacon.beacon.service.BeaconService.TAG;
 
 /**
  * Inspired by http://altbeacon.github.io/android-beacon-library/samples.html
+ * Authorization : http://altbeacon.github.io/android-beacon-library/requesting_permission.html
  */
 public class IBeaconActivity extends Activity implements BeaconConsumer {
 
@@ -37,6 +43,9 @@ public class IBeaconActivity extends Activity implements BeaconConsumer {
 
     private BeaconAdapter beaconAdapter = new BeaconAdapter();
 
+    private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +53,34 @@ public class IBeaconActivity extends Activity implements BeaconConsumer {
 
         listView = findViewById(R.id.listView);
         listView.setAdapter(beaconAdapter);
+
+        // Authorization
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+            // Android M Permission check
+
+            if (this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                builder.setTitle("This app needs location access");
+                builder.setMessage("Please grant location access so this app can detect beacons.");
+                builder.setPositiveButton(android.R.string.ok, null);
+
+                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_COARSE_LOCATION);
+                    }
+
+                });
+
+                builder.show();
+
+            }
+
+        }
+
 
         // Beacons
         beaconManager = BeaconManager.getInstanceForApplication(this);
@@ -64,6 +101,7 @@ public class IBeaconActivity extends Activity implements BeaconConsumer {
             public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
                 // Updating the list
                 IBeaconActivity.this.beacons = beacons;
+                System.out.println(beacons.size());
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -89,12 +127,12 @@ public class IBeaconActivity extends Activity implements BeaconConsumer {
 
         @Override
         public Beacon getItem(int i) {
-            return ((Beacon[])beacons.toArray())[i];
+            return (Beacon) (beacons.toArray())[i];
         }
 
         @Override
         public long getItemId(int i) {
-            return (long)i;
+            return (long) i;
         }
 
         @Override
@@ -105,7 +143,7 @@ public class IBeaconActivity extends Activity implements BeaconConsumer {
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
             // Firstly inflating the view if not already done
-            if(view == null){
+            if (view == null) {
                 LayoutInflater inflater = (LayoutInflater) IBeaconActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.beacon_item_view, viewGroup, false);
             }
@@ -119,9 +157,37 @@ public class IBeaconActivity extends Activity implements BeaconConsumer {
             Beacon cur = getItem(i);
             tv1.setText(cur.getId2().toString());
             tv2.setText(cur.getId3().toString());
-            rssi.setText(cur.getRssi());
+            rssi.setText(cur.getRssi() + "");
 
             return view;
         }
     }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_COARSE_LOCATION: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d(TAG, "coarse location permission granted");
+                } else {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Functionality limited");
+                    builder.setMessage("Since location access has not been granted, this app will not be able to discover beacons when in the background.");
+                    builder.setPositiveButton(android.R.string.ok, null);
+                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                        }
+
+                    });
+                    builder.show();
+                }
+                return;
+            }
+        }
+    }
+
 }
