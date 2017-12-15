@@ -6,6 +6,7 @@ repositories {
 
 android {
     compileSdkVersion 26
+    buildToolsVersion '26.0.2' // Older versions may give compile errors
     defaultConfig {
         applicationId "com.remikaddie.labo3"
         minSdkVersion 21
@@ -31,4 +32,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     compile 'org.altbeacon:android-beacon-library:2+'
+    compile 'com.journeyapps:zxing-android-embedded:3.5.0'
+    compile 'com.android.support:appcompat-v7:26.1.0'   // Version 23+ is required
 }

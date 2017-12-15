@@ -6,4 +6,21 @@
     android:layout_height="match_parent"
     tools:context="com.remikaddie.labo3.BarcodeActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/scan_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Scan a barcode" />
+
+        <TextView
+            android:id="@+id/barcodeResult"
+            android:layout_width="match_parent"
+            android:layout_height="459dp"
+            android:text="TextView" />
+    </LinearLayout>
 </LinearLayout>
