@@ -12,7 +12,7 @@
         android:orientation="vertical">
 
         <Button
-            android:id="@+id/scan_button"
+            android:id="@+id/barcodeScanButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Scan a barcode" />

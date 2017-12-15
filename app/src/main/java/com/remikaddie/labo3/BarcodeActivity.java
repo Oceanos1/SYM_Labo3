@@ -17,7 +17,7 @@ public class BarcodeActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_barcode);
-        Button button = (Button) findViewById(R.id.barCodeButton);
+        Button button = (Button) findViewById(R.id.barcodeScanButton);
         textView = (TextView) findViewById(R.id.barcodeResult);
 
         button.setOnClickListener(new View.OnClickListener() {
