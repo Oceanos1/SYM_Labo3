@@ -16,13 +16,17 @@ import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static android.content.ContentValues.TAG;
 
@@ -42,20 +46,60 @@ public class NfcActivity extends Activity {
     //Current level of authentication. Decreases over time
     private int authenticationLevel;
 
+    private EditText nfcPasswordField;
+
+    private boolean passwordCorrect;
+
     String scannedText;
 
     private NfcAdapter nfcAdapter;
+
+    private Timer authTimer;
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        nfcAccessButton = (Button)findViewById(R.id.barCodeButton);
+        setContentView(R.layout.activity_nfc);
+
+        nfcAccessButton = (Button)findViewById(R.id.nfc_access_button);
         doubleAuth = (Switch)findViewById(R.id.nfc_auth_switch);
         nfcStatus = (TextView)findViewById(R.id.nfc_status);
         secureDataView = (TextView)findViewById(R.id.secure_data_view);
         authenticationLevel = 0;
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        passwordCorrect = false;
+
+        nfcPasswordField = (EditText)findViewById(R.id.nfc_password);
+        nfcAccessButton.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(nfcPasswordField.getText().toString().equals("password")){
+                    passwordCorrect = true;
+                    if(doubleAuth.isChecked()){
+                        if(authTimer != null){
+                            authTimer.cancel();
+                            authTimer = null;
+                        }
+                        secureDataView.setText("First authentification passed. You can now scan the NFC tag to gain access to the secure data");
+                    }else{
+                        authenticate();
+                    }
+                }else{
+                    passwordCorrect = false;
+                    if(authTimer != null){
+                        authTimer.cancel();
+                        authTimer = null;
+                    }
+                    authenticationLevel = 0;
+                    secureDataView.setText("Incorrect password! Auth level set to 0");
+                }
+
+            }
+        });
+
+
         if (nfcAdapter == null) {
             // Stop here, we definitely need NFC
             Toast.makeText(this, "This device doesn't support NFC.", Toast.LENGTH_LONG).show();
@@ -65,7 +109,6 @@ public class NfcActivity extends Activity {
             Toast.makeText(this, "NFC is not enabled.", Toast.LENGTH_LONG).show();
         }
         handleIntent(getIntent());
-        setContentView(R.layout.activity_nfc);
     }
 
     private void handleIntent(Intent intent) {
@@ -190,10 +233,51 @@ public class NfcActivity extends Activity {
         @Override
         protected void onPostExecute(String result) {
             if (result != null) {
+                nfcStatus.setText("NFC tag scanned! ");
                 scannedText = result;
-                secureDataView.setText(result);
+                if(doubleAuth.isChecked()){
+                    if(!passwordCorrect){
+                        secureDataView.setText("Please enter password before scanning NFC tag");
+                        return;
+                    }
+                }
+                authenticate();
             }
         }
+    }
+
+    private void authenticate() {
+        authenticationLevel = 10;
+        if(authTimer != null){
+            authTimer.cancel();
+        }
+        NfcActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                secureDataView.setText("You can access secure data with an authentification level of "
+                        + authenticationLevel + ". Scan NFC tag to set to maximum.");
+            }
+        });
+
+        authTimer = new Timer();
+        //Reduce auth level by one every 5 seconds
+        authTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                authenticationLevel--;
+                NfcActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        secureDataView.setText("You can access secure data with an authentification level of "
+                                + authenticationLevel + ". Scan NFC tag to set to maximum.");
+                    }
+                });
+                if(authenticationLevel == 0){
+                    authTimer.cancel();
+                }
+            }
+        }, 5000, 5000);
+
     }
 
     @Override
