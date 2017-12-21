@@ -10,6 +10,7 @@ import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
+import android.nfc.tech.NfcA;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
@@ -97,7 +98,7 @@ public class NfcActivity extends Activity {
     }
 
     // called in onResume()
-    private void setupForegroundDispatch() {
+    private void setupForegroundDispatch(final Activity activity, NfcAdapter nfcAdapter) {
         if(nfcAdapter == null)
             return;
         final Intent intent = new Intent(this.getApplicationContext(),
@@ -121,7 +122,7 @@ public class NfcActivity extends Activity {
     }
 
     // called in onPause()
-    private void stopForegroundDispatch() {
+    private void stopForegroundDispatch(final Activity activity, NfcAdapter nfcAdapter) {
         if(nfcAdapter != null)
             nfcAdapter.disableForegroundDispatch(this);
     }
@@ -193,6 +194,39 @@ public class NfcActivity extends Activity {
                 secureDataView.setText(result);
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        /**
+         * It's important, that the activity is in the foreground (resumed). Otherwise
+         * an IllegalStateException is thrown.
+         */
+        setupForegroundDispatch(this, nfcAdapter);
+    }
+
+    @Override
+    protected void onPause() {
+        /**
+         * Call this before onPause, otherwise an IllegalArgumentException is thrown as well.
+         */
+        stopForegroundDispatch(this, nfcAdapter);
+
+        super.onPause();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        /**
+         * This method gets called, when a new Intent gets associated with the current activity instance.
+         * Instead of creating a new activity, onNewIntent will be called. For more information have a look
+         * at the documentation.
+         *
+         * In our case this method gets called, when the user attaches a Tag to the device.
+         */
+        handleIntent(intent);
     }
 
 }
