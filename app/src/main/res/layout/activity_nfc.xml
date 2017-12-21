@@ -6,4 +6,44 @@
     android:layout_height="match_parent"
     tools:context="com.remikaddie.labo3.NfcActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Switch
+            android:id="@+id/nfc_auth_switch"
+            android:layout_width="match_parent"
+            android:layout_height="41dp"
+            android:text="Use double auth (password and nfc)" />
+
+        <TextView
+            android:id="@+id/nfc_status"
+            android:layout_width="match_parent"
+            android:layout_height="41dp"
+            android:lineSpacingExtra="10sp"
+            android:text="NFC status: Not scanned"
+            android:textAlignment="viewStart"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/nfc_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Password"
+            android:inputType="textPassword" />
+
+        <Button
+            android:id="@+id/nfc_access_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Access secure data" />
+
+        <TextView
+            android:id="@+id/secure_data_view"
+            android:layout_width="match_parent"
+            android:layout_height="134dp" />
+    </LinearLayout>
 </LinearLayout>
