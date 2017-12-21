@@ -33,6 +33,9 @@ public class BarcodeActivity extends Activity {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanResult != null) {
             textView.setText(scanResult.getContents());
+        }else{
+            textView.setText("Echec lors du scan! Veuillez réessayer");
+
         }
     }
 }

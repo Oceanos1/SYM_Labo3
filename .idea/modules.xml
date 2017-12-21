@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SYM_Labo3.iml" filepath="$PROJECT_DIR$/SYM_Labo3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Labo3.iml" filepath="$PROJECT_DIR$/Labo3.iml" />
+      <module fileurl="file://C:\Users\Eddie\Desktop\HEIG-VD\3eme\SYM\labo3\SYM_Labo3\Labo3.iml" filepath="C:\Users\Eddie\Desktop\HEIG-VD\3eme\SYM\labo3\SYM_Labo3\Labo3.iml" />
+      <module fileurl="file://C:\Users\Remi\OneDrive\HEIG\Cours\S5\SYM\Labos\Labo3\SYM_Labo3.iml" filepath="C:\Users\Remi\OneDrive\HEIG\Cours\S5\SYM\Labos\Labo3\SYM_Labo3.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
