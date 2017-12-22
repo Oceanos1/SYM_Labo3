@@ -52,6 +52,7 @@ public class IBeaconActivity extends Activity implements BeaconConsumer {
         setContentView(R.layout.activity_ibeacon);
 
         listView = findViewById(R.id.listView);
+        listView.setEmptyView(findViewById(R.id.emptyView));
         listView.setAdapter(beaconAdapter);
 
         // Authorization
