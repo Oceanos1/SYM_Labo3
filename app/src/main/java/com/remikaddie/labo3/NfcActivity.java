@@ -37,6 +37,7 @@ import static android.content.ContentValues.TAG;
 public class NfcActivity extends Activity {
 
     public static final String MIME_TEXT_PLAIN = "text/plain";
+    public static final String PASSWORD = "password";
     //Tries to authenticate
     private Button nfcAccessButton;
     //Choose whether to authenticate using both NFC and password or just one of these
@@ -75,7 +76,7 @@ public class NfcActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                if(nfcPasswordField.getText().toString().equals("password")){
+                if(nfcPasswordField.getText().toString().equals(PASSWORD)){
                     passwordCorrect = true;
                     if(doubleAuth.isChecked()){
                         if(authTimer != null){
@@ -233,7 +234,7 @@ public class NfcActivity extends Activity {
         @Override
         protected void onPostExecute(String result) {
             if (result != null) {
-                nfcStatus.setText("NFC tag scanned! ");
+                nfcStatus.setText("NFC tag scanned! : "+result);
                 scannedText = result;
                 if(doubleAuth.isChecked()){
                     if(!passwordCorrect){
