@@ -11,36 +11,45 @@
     <Button
         android:id="@+id/nfcButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="120dp"
+        android:onClick="openActivity"
         android:text="NFC"
+        android:textSize="40px"
+        android:textColor="@color/colorPrimaryDark"
         tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="16dp"
-        android:onClick="openActivity"/>
+        tools:layout_editor_absoluteY="16dp" />
 
     <Button
         android:id="@+id/barCodeButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="120dp"
+        android:onClick="openActivity"
         android:text="Barcode"
+        android:textSize="40px"
+        android:textColor="@color/colorPrimaryDark"
+
         tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="16dp"
-        android:onClick="openActivity"/>
+        tools:layout_editor_absoluteY="16dp" />
 
     <Button
         android:id="@+id/iBeaconButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="120dp"
+        android:onClick="openActivity"
         android:text="iBeacon"
+        android:textSize="40px"
+        android:textColor="@color/colorPrimaryDark"
         tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="16dp"
-        android:onClick="openActivity"/>
+        tools:layout_editor_absoluteY="16dp" />
 
     <Button
         android:id="@+id/captorButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="120dp"
+        android:onClick="openActivity"
         android:text="Captor"
+        android:textSize="40px"
+        android:textColor="@color/colorPrimaryDark"
         tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="16dp"
-        android:onClick="openActivity"/>
+        tools:layout_editor_absoluteY="16dp" />
 </LinearLayout>
