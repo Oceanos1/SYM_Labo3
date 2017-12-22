@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.remikaddie.labo3.IBeaconActivity"
-    android:orientation="vertical"
-    android:id="@+id/listView">
+    android:layout_height="match_parent">
 
-</ListView>
+    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.remikaddie.labo3.IBeaconActivity">
+
+    </ListView>
+
+    <TextView
+        android:id="@+id/emptyView"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="@string/emptyBeacon" />
+
+</RelativeLayout>
